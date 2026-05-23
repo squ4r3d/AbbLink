@@ -1,11 +1,83 @@
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
+import { buildHello, sharedVersion } from 'shared'
+import {
+  HelloRequest,
+  type HelloRequestType,
+  type HelloResponseType,
+} from 'shared/api/hello'
 import './App.css'
 
 function App() {
   const [count, setCount] = useState(0)
+  const [apiMessage, setApiMessage] = useState('Loading...')
+  const [apiTime, setApiTime] = useState('')
+  const [apiError, setApiError] = useState('')
+  const [helloText, setHelloText] = useState('world')
+  const [helloStatus, setHelloStatus] = useState('')
+  const [helloResponse, setHelloResponse] =
+    useState<HelloResponseType | null>(null)
+
+  const apiBase = useMemo(
+    () => import.meta.env.VITE_API_BASE ?? 'http://localhost:8787',
+    []
+  )
+
+  useEffect(() => {
+    const controller = new AbortController()
+
+    fetch(`${apiBase}/api/ping`, { signal: controller.signal })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`API error: ${res.status}`)
+        }
+        return res.json()
+      })
+      .then((data) => {
+        setApiMessage(String(data.message ?? ''))
+        setApiTime(String(data.now ?? ''))
+        setApiError('')
+      })
+      .catch((err) => {
+        if (err instanceof Error && err.name === 'AbortError') {
+          return
+        }
+        setApiError(err instanceof Error ? err.message : 'Unknown error')
+      })
+
+    return () => controller.abort()
+  }, [apiBase])
+
+  const handleHello = () => {
+    const payload: HelloRequestType = { text: helloText }
+    const parsed = HelloRequest.safeParse(payload)
+    if (!parsed.success) {
+      setHelloStatus('Invalid text')
+      return
+    }
+
+    setHelloStatus('Sending...')
+    fetch(`${apiBase}/api/hello`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(parsed.data),
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`API error: ${res.status}`)
+        }
+        return res.json()
+      })
+      .then((data: HelloResponseType) => {
+        setHelloResponse(data)
+        setHelloStatus('OK')
+      })
+      .catch((err) => {
+        setHelloStatus(err instanceof Error ? err.message : 'Unknown error')
+      })
+  }
 
   return (
     <>
@@ -28,6 +100,32 @@ function App() {
         >
           Count is {count}
         </button>
+        <div style={{ marginTop: '16px' }}>
+          <p>
+            {buildHello('web')} / {sharedVersion}
+          </p>
+          <p>
+            API: {apiError ? `Error: ${apiError}` : apiMessage}
+            {apiTime ? ` (${apiTime})` : ''}
+          </p>
+          <div style={{ marginTop: '8px' }}>
+            <input
+              type="text"
+              value={helloText}
+              onChange={(event) => setHelloText(event.target.value)}
+              placeholder="Say hello"
+            />
+            <button
+              type="button"
+              style={{ marginLeft: '8px' }}
+              onClick={handleHello}
+            >
+              Send Hello
+            </button>
+            {helloStatus ? <p>{helloStatus}</p> : null}
+            {helloResponse ? <p>Response: {helloResponse.message}</p> : null}
+          </div>
+        </div>
       </section>
 
       <div className="ticks"></div>

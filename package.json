@@ -4,7 +4,7 @@
   "description": "This app is developed by SQu4r3d.",
   "private": true,
   "workspaces": [
-    "apps/*",
+    "app/*",
     "packages/*"
   ]
 }

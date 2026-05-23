@@ -1,7 +1,8 @@
 {
   "name": "shared",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -11,7 +12,18 @@
   "description": "",
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./schemas/hello": {
+      "types": "./src/schemas/hello.ts",
+      "default": "./src/schemas/hello.ts"
+    },
+    "./api/hello": {
+      "types": "./src/api/hello.ts",
+      "default": "./src/api/hello.ts"
+    }
   },
   "dependencies": {
     "zod": "^4.4.3"
