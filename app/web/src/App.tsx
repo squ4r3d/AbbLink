@@ -2,12 +2,8 @@ import { useEffect, useMemo, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
-import { buildHello, sharedVersion } from 'shared'
-import {
-  HelloRequest,
-  type HelloRequestType,
-  type HelloResponseType,
-} from 'shared/api/hello'
+import { helloEndpoint, sharedVersion } from 'shared'
+import type { HelloRequest, HelloResponse } from 'shared'
 import './App.css'
 
 function App() {
@@ -18,7 +14,7 @@ function App() {
   const [helloText, setHelloText] = useState('world')
   const [helloStatus, setHelloStatus] = useState('')
   const [helloResponse, setHelloResponse] =
-    useState<HelloResponseType | null>(null)
+    useState<HelloResponse | null>(null)
 
   const apiBase = useMemo(
     () => import.meta.env.VITE_API_BASE ?? 'http://localhost:8787',
@@ -51,15 +47,15 @@ function App() {
   }, [apiBase])
 
   const handleHello = () => {
-    const payload: HelloRequestType = { text: helloText }
-    const parsed = HelloRequest.safeParse(payload)
+    const payload: HelloRequest = { text: helloText }
+    const parsed = helloEndpoint.request.safeParse(payload)
     if (!parsed.success) {
       setHelloStatus('Invalid text')
       return
     }
 
     setHelloStatus('Sending...')
-    fetch(`${apiBase}/api/hello`, {
+    fetch(`${apiBase}${helloEndpoint.path}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(parsed.data),
@@ -70,7 +66,7 @@ function App() {
         }
         return res.json()
       })
-      .then((data: HelloResponseType) => {
+      .then((data: HelloResponse) => {
         setHelloResponse(data)
         setHelloStatus('OK')
       })
@@ -101,9 +97,7 @@ function App() {
           Count is {count}
         </button>
         <div style={{ marginTop: '16px' }}>
-          <p>
-            {buildHello('web')} / {sharedVersion}
-          </p>
+          <p>sharedVersion: {sharedVersion}</p>
           <p>
             API: {apiError ? `Error: ${apiError}` : apiMessage}
             {apiTime ? ` (${apiTime})` : ''}

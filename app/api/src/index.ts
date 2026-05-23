@@ -1,8 +1,9 @@
 import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
-import { buildHello, sharedVersion } from 'shared'
-import { HelloRequest, HelloResponse, type HelloRequestType } from 'shared/api/hello'
+import { sharedVersion } from 'shared'
+import { helloEndpoint } from 'shared/endpoints/hello'
+import type { HelloRequest, HelloResponse } from 'shared/schemas/hello'
 
 const app = new Hono()
 
@@ -17,20 +18,20 @@ app.use(
 app.get('/api/ping', (c) => {
   return c.json({
     ok: true,
-    message: buildHello('api'),
+    message: 'API is running',
     sharedVersion,
     now: new Date().toISOString(),
   })
 })
 
 app.post('/api/hello', async (c) => {
-  const body = (await c.req.json()) as HelloRequestType
-  const request = HelloRequest.parse(body)
-  const response = HelloResponse.parse({
+  const body = (await c.req.json()) as HelloRequest
+  const request = helloEndpoint.request.parse(body)
+  const response = helloEndpoint.response.parse({
     message: `hello ${request.text}`,
   })
 
-  return c.json(response, 200)
+  return c.json(response satisfies HelloResponse, 200)
 })
 
 app.get('/', (c) => {

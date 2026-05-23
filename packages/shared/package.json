@@ -20,9 +20,13 @@
       "types": "./src/schemas/hello.ts",
       "default": "./src/schemas/hello.ts"
     },
-    "./api/hello": {
-      "types": "./src/api/hello.ts",
-      "default": "./src/api/hello.ts"
+    "./endpoints/hello": {
+      "types": "./src/endpoints/hello.ts",
+      "default": "./src/endpoints/hello.ts"
+    },
+    "./endpoints/types": {
+      "types": "./src/endpoints/types.ts",
+      "default": "./src/endpoints/types.ts"
     }
   },
   "dependencies": {

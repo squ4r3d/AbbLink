@@ -1,16 +1,9 @@
 export const sharedVersion = 'shared-hello-v1'
 
-export const buildHello = (source: string) => {
-  return `Hello from ${source}`
-}
-
 export {
   HelloRequestSchema,
   HelloResponseSchema,
+  type HelloRequest,
+  type HelloResponse,
 } from './schemas/hello'
-export {
-  HelloRequest,
-  HelloResponse,
-  type HelloRequestType,
-  type HelloResponseType,
-} from './api/hello'
+export { helloEndpoint } from './endpoints/hello'
