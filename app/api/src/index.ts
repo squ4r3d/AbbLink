@@ -1,11 +1,14 @@
 import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
+import { logger } from 'hono/logger'
 import { sharedVersion } from 'shared'
 import { helloEndpoint } from 'shared/endpoints/hello'
 import type { HelloRequest, HelloResponse } from 'shared/schemas/hello'
 
 const app = new Hono()
+
+app.use(logger())
 
 const corsOrigin = process.env.CORS_ORIGIN ?? 'http://localhost:5173'
 
