@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3桁数字からURLを表示</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            padding: 40px;
+            background-color: #f5f5f7;
+            color: #333;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #34c759; /* 緑系のボタンにしています */
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #2ebd50;
+        }
+        .moveBtn {
+            display: block; /* <button>タグなどの場合はこれが必要 */
+            width: 200px;
+            background-color: #34c759; /* 緑系のボタンにしています */
+            
+            /* 上に20px、左右は中央(auto)、下は0 */
+            margin: 20px auto 0; 
+        }
+        .moveBtn:hover {
+            background-color: #2ebd50;
+        }
+        .result-area {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: #f0f0f5;
+            border-radius: 6px;
+            text-align: center;
+            min-height: 60px;
+            word-break: break-all; /* 長いURLでも枠からはみ出さないように */
+        }
+        .url-link {
+            font-size: 16px;
+            color: #0071e3;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .url-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>数字からページを開く</h2>
+    
+    <div class="form-group">
+        <label for="numberInput">3桁の数字を入力してください：</label>
+        <input type="text" id="numberInput" placeholder="例：123" maxlength="3">
+    </div>
+    
+    <button id="redirectBtn">ページを表示する</button>
+    
+    <div class="result-area">
+        <p id="resultDisplay" style="color: #888; margin: 15px 0;">ここに結果が表示されます</p>
+    </div>
+</div>
+
+<script>
+    document.getElementById('redirectBtn').addEventListener('click', function() {
+        const numberInput = document.getElementById('numberInput').value.trim();
+        const resultDisplay = document.getElementById('resultDisplay');
+
+        // 正規表現を使って「半角数字の3桁」のみを許可するチェック
+        // ^[0-9]{3}$ は「行頭から行末まで数字がちょうど3回繰り返される」という意味です
+        const isThreeDigitNumber = /^[0-9]{3}$/.test(numberInput);
+
+        if (!isThreeDigitNumber) {
+            // 3桁の数字でない場合は、表示エリアをクリア（何も表示しない）
+            resultDisplay.innerHTML = '３桁の数字を入力してください。';
+            return;
+        }
+
+        // 条件をクリアした場合、適当なURL文字列を生成して表示
+        const dummyUrl = `https://example.com/page-${numberInput}`;
+        
+        // 画面にリンクとして表示
+        resultDisplay.innerHTML = `対応するURL：<br><br><a href="${dummyUrl}" target="_blank" class="url-link">${dummyUrl}</a>`;
+    });
+</script>
+
+    <button class="moveBtn" onclick="location.href='number_gene.html'" id="moveBtn">数字生成ページへ</button>
+
+</body>
+</html>
