@@ -5,9 +5,35 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>react</title>
+    <style>
+      button {
+            width: 100%;
+            padding: 12px;
+            background-color: #0071e3;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #0077ed;
+        }
+        .moveBtn {
+            display: block; /* <button>タグなどの場合はこれが必要 */
+            width: 200px;
+            background-color: #0071e3;
+            
+            /* 上に20px、左右は中央(auto)、下は0 */
+            margin: 20px auto 0; 
+        }
+    </style>
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <h1>Abblink</h1>
+    <button class="moveBtn" onclick="location.href='number_input.html'" id="moveBtn">数字入力ページへ</button>
+    <button class="moveBtn" onclick="location.href='number_gene.html'" id="moveBtn">数字生成ページへ</button>
   </body>
 </html>
